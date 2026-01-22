@@ -4,18 +4,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { motion, AnimatePresence } from "framer-motion";
 import { wizardSchema } from "../../schemas/wizardSchema";
 
-// Import Steps
 import StepContact from "./steps/StepContact";
 import StepUsername from "./steps/StepUsername";
 import StepAsync from "./steps/StepAsync";
 import StepResult from "./steps/StepResult";
 import ProgressBar from "./ProgressBar";
 
-// Định nghĩa Steps và Fields cần validate tương ứng
 const STEPS = [
   { component: StepContact, fields: ["email", "firstName", "lastName", "age"] },
   { component: StepUsername, fields: ["username"] },
-  { component: StepAsync, fields: [] }, // Async step không có field để validate
+  { component: StepAsync, fields: [] }, 
   { component: StepResult, fields: [] },
 ];
 
@@ -26,7 +24,7 @@ export default function WizardForm() {
 
   const methods = useForm({
     resolver: zodResolver(wizardSchema),
-    mode: "all", // Validate on change/blur
+    mode: "all", 
     defaultValues: {
       firstName: "",
       lastName: "",
@@ -41,19 +39,15 @@ export default function WizardForm() {
   const handleNext = async () => {
     const stepConfig = STEPS[currentStep];
     
-    // 1. Validate fields của step hiện tại
     const isStepValid = await trigger(stepConfig.fields);
     if (!isStepValid) return;
 
-    // 2. Xử lý logic Async nếu đang ở bước Async
     if (currentStep === 2) { 
-      // Giả sử bước 2 là bước Async (index 2)
       setIsLoading(true);
       await new Promise((resolve) => setTimeout(resolve, 2000));
       setIsLoading(false);
     }
 
-    // 3. Chuyển step
     setDirection(1);
     if (currentStep < STEPS.length - 1) {
       setCurrentStep((prev) => prev + 1);
@@ -103,10 +97,8 @@ export default function WizardForm() {
           </div>
         </div>
 
-        {/* Progress Bar */}
         <ProgressBar currentStep={currentStep} totalSteps={STEPS.length} />
 
-        {/* Form Body */}
         <FormProvider {...methods}>
           <div className="flex-1 p-8 relative">
             <AnimatePresence mode="wait" custom={direction}>
@@ -126,7 +118,6 @@ export default function WizardForm() {
           </div>
         </FormProvider>
 
-        {/* Footer Navigation */}
         {!isLastStep && (
           <div className="p-6 border-t border-slate-700 flex justify-between bg-slate-800 z-10">
             <button
